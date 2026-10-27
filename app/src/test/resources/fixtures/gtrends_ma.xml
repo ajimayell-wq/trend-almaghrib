@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Échantillon réel de https://trends.google.com/trending/rss?geo=MA capturé le 22/10/2026. -->
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:ht="https://trends.google.com/trending/rss" version="2.0"><channel>
+<item><title>coupe du monde féminine de football des moins de 17 ans</title><ht:approx_traffic>100+</ht:approx_traffic>
+<pubDate>Wed, 21 Oct 2026 11:00:00 -0700</pubDate>
+<ht:news_item><ht:news_item_title>Coupe du Monde Féminine U17 FIFA (2ème journée): Maroc-Allemagne (2-4)</ht:news_item_title><ht:news_item_url>https://frmf.ma/fr/articles/article-28</ht:news_item_url><ht:news_item_source>FRMF</ht:news_item_source></ht:news_item>
+<ht:news_item><ht:news_item_title>Mondial U17 féminin : Youness Rabie veut rebondir face à l’Argentine</ht:news_item_title><ht:news_item_url>https://fr.hespress.com/493341-mondial-u17-feminin-youness-rabie-veut-rebondir-face-a-largentine.html</ht:news_item_url><ht:news_item_source>Hespress Français</ht:news_item_source></ht:news_item>
+</item>
+<item><title>منتخب أنغولا لكرة القدم</title><ht:approx_traffic>200+</ht:approx_traffic>
+<pubDate>Wed, 21 Oct 2026 10:20:00 -0700</pubDate>
+<ht:news_item><ht:news_item_title>أمزال أفضل لاعب في مباراة مصر</ht:news_item_title><ht:news_item_url>https://www.hespress.com/%D8%A3%D9%85%D8%B2%D8%A7%D9%84-%D8%A3%D9%81%D8%B6%D9%84-%D9%84%D8%A7%D8%B9%D8%A8-%D9%81%D9%8A-%D9%85%D8%A8%D8%A7%D8%B1%D8%A7%D8%A9-%D9%85%D8%B5%D8%B1-1825923.html</ht:news_item_url><ht:news_item_source>Hespress</ht:news_item_source></ht:news_item>
+</item>
+<item><title>lille – galatasaray</title><ht:approx_traffic>1000+</ht:approx_traffic>
+<pubDate>Wed, 21 Oct 2026 09:10:00 -0700</pubDate>
+<ht:news_item><ht:news_item_title>Galatasaray'da Okan Buruk'tan 3 değişiklik!</ht:news_item_title><ht:news_item_url>https://www.haberturk.com/spor/galatasaray-da-okan-buruk-tan-3-degisiklik-3921527</ht:news_item_url></ht:news_item>
+<ht:news_item><ht:news_item_title>TRT 1 CANLI MAÇ İZLE! LİLLE-GS maçı</ht:news_item_title><ht:news_item_url>https://example.invalid/stream</ht:news_item_url></ht:news_item>
+</item>
+<item><title>côme – man utd</title><ht:approx_traffic>5000+</ht:approx_traffic>
+<pubDate>Wed, 21 Oct 2026 09:00:00 -0700</pubDate>
+<ht:news_item><ht:news_item_title>Como vs Manchester United: UEFA Champions League stats</ht:news_item_title><ht:news_item_url>https://www.bbc.com/sport/football/live/cwe8l3zeexvvt</ht:news_item_url></ht:news_item>
+</item>
+</channel></rss>

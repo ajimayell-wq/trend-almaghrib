@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Échantillon réel (titres, liens, dates, rubriques) du flux https://fr.hespress.com/feed capturé le 22/10/2026.
+     Les descriptions sont abrégées pour le test. -->
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel><title>Hespress Français</title>
+<item><title>Le programme gouvernemental adopté par 204 voix contre 127</title>
+<link>https://fr.hespress.com/493633-le-programme-gouvernemental-adopte-par-204-voix-contre-127.html</link>
+<pubDate>Thu, 22 Oct 2026 20:09:41 +0000</pubDate><category><![CDATA[Politique]]></category><category><![CDATA[Parlement]]></category>
+<description><![CDATA[<p>Vote du programme gouvernemental de Fatima Ezzahra El Mansouri à la Chambre des représentants.</p><p>The post <a href="x">x</a> appeared first on <a href="y">Hespress</a>.</p>]]></description>
+<media:content url="https://f2.hespress.com/wp-content/uploads/2026/10/DSC_3806-scaled.jpg" type="image/jpeg"/></item>
+<item><title>El Mansouri tacle le PJD et son « discours de victimisation »</title>
+<link>https://fr.hespress.com/493629-el-mansouri-tacle-le-pjd-et-son-discours-de-victimisation.html</link>
+<pubDate>Thu, 22 Oct 2026 20:01:28 +0000</pubDate><category><![CDATA[Politique]]></category>
+<description><![CDATA[La cheffe du gouvernement El Mansouri répond aux députés du PJD sur le programme gouvernemental.]]></description></item>
+<item><title>Programme gouvernemental : l&#039;Alliance de la gauche annonce son vote contre</title>
+<link>https://fr.hespress.com/493605-programme-gouvernemental-lalliance-de-la-gauche-annonce-son-vote-contre.html</link>
+<pubDate>Thu, 22 Oct 2026 17:03:25 +0000</pubDate><category><![CDATA[Politique]]></category>
+<description><![CDATA[Nabila Jalal annonce le vote contre du groupe sur le programme gouvernemental El Mansouri.]]></description></item>
+<item><title>Minurso : le projet de la future résolution tourne la page du référendum</title>
+<link>https://fr.hespress.com/493626-minurso-le-projet-de-la-future-resolution-tourne-la-page-du-referendum.html</link>
+<pubDate>Thu, 22 Oct 2026 19:16:59 +0000</pubDate><category><![CDATA[Politique]]></category><category><![CDATA[MINURSO]]></category>
+<description><![CDATA[Projet de résolution américain sur le Sahara : autonomie, mandat de la Minurso, le polisario menace de quitter le processus.]]></description></item>
+<item><title>France : le virus Shamonda détecté pour la première fois chez un humain, un patient décédé</title>
+<link>https://fr.hespress.com/493571-france-le-virus-shamonda-detecte-pour-la-premiere-fois-chez-un-humain-un-patient-decede.html</link>
+<pubDate>Thu, 22 Oct 2026 20:49:03 +0000</pubDate><category><![CDATA[Monde]]></category>
+<description><![CDATA[Premier cas humain du virus Shamonda signalé à Lyon.]]></description></item>
+<item><title>Myrtilles : le Maroc intègre le top 5 des fournisseurs de la Suisse</title>
+<link>https://fr.hespress.com/493231-myrtilles-le-maroc-integre-le-top-5-des-fournisseurs-de-la-suisse.html</link>
+<pubDate>Thu, 22 Oct 2026 18:16:55 +0000</pubDate><category><![CDATA[Economie]]></category>
+<description><![CDATA[Exportations de myrtilles vers la Suisse en hausse.]]></description></item>
+<item><title>Mondial U17 féminin : Youness Rabie veut rebondir face à l’Argentine</title>
+<link>https://fr.hespress.com/493341-mondial-u17-feminin-youness-rabie-veut-rebondir-face-a-largentine.html</link>
+<pubDate>Wed, 21 Oct 2026 21:30:00 +0000</pubDate><category><![CDATA[Sport]]></category>
+<description><![CDATA[Après la défaite contre l'Allemagne en Coupe du monde féminine U17, le sélectionneur vise l'Argentine.]]></description></item>
+</channel></rss>
