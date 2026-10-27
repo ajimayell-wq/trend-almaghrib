@@ -87,7 +87,7 @@ fun TrendsScreen(st: AppState, onTopic: (Int) -> Unit, onAnalyst: () -> Unit) {
                 ) {
                     Text("أكثر 20 موضوعاً تداولاً في المغرب", style = MaterialTheme.typography.titleLarge)
                     Text(
-                        "آخر $hours ساعة · ${st.lastRefresh?.let { "تحديث " + Fmt.ago(it) } ?: "لم يتم التحديث بعد"}",
+                        "آخر ${Fmt.hours(hours)} · ${st.lastRefresh?.let { "تحديث " + Fmt.ago(it) } ?: "لم يتم التحديث بعد"}",
                         style = MaterialTheme.typography.bodySmall.copy(color = C.mut),
                     )
                     Spacer(Modifier.height(10.dp))
@@ -95,7 +95,7 @@ fun TrendsScreen(st: AppState, onTopic: (Int) -> Unit, onAnalyst: () -> Unit) {
                         WINDOWS.forEachIndexed { i, h ->
                             val on = i == window
                             Text(
-                                "$h س", textAlign = TextAlign.Center,
+                                Fmt.hours(h), textAlign = TextAlign.Center,
                                 style = MaterialTheme.typography.labelLarge.copy(color = if (on) Color(0xFF1A1405) else C.txt),
                                 modifier = Modifier.weight(1f).clip(RoundedCornerShape(10.dp))
                                     .then(if (on) Modifier.background(C.goldBrush) else Modifier.background(Color(0x14FFFFFF)))
@@ -121,7 +121,7 @@ fun TrendsScreen(st: AppState, onTopic: (Int) -> Unit, onAnalyst: () -> Unit) {
                     }
                 }
             }
-            if (list.isEmpty()) item { EmptyBlock(if (st.topics.isEmpty()) "لا توجد بيانات بعد. ارجع إلى الرئيسية للتحديث." else "لا توجد مواضيع لهذا التصنيف خلال آخر $hours ساعة.") }
+            if (list.isEmpty()) item { EmptyBlock(if (st.topics.isEmpty()) "لا توجد بيانات بعد. ارجع إلى الرئيسية للتحديث." else "لا توجد مواضيع لهذا التصنيف خلال آخر ${Fmt.hours(hours)}.") }
             itemsIndexed(list, key = { _, t -> t.id }) { i, t -> TopicRow(i + 1, t, { onTopic(t.id) }, detailed = true) }
         }
     }

@@ -1,6 +1,12 @@
 package ma.trend.almaghrib.ui
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -51,33 +57,65 @@ fun Logo(size: Int = 34) {
     }
 }
 
+/** Petit badge de rang posé sur l'image (laisse toute la largeur au titre). */
 @Composable
-fun RankNumber(rank: Int, big: Boolean = true) {
-    val st = MaterialTheme.typography.headlineSmall.copy(fontSize = if (big) 25.sp else 20.sp, textAlign = TextAlign.Center, textDirection = TextDirection.Ltr)
-    val m = Modifier.width(26.dp)
-    when {
-        rank == 1 -> GoldText("$rank", st, m)
-        rank <= 3 -> Text("$rank", style = st.copy(color = C.gold2), modifier = m)
-        else -> Text("$rank", style = st.copy(color = androidx.compose.ui.graphics.Color(0xFFCFC9BB)), modifier = m)
+fun RankBadge(rank: Int, modifier: Modifier = Modifier) {
+    val gold = rank <= 3
+    Box(
+        modifier.padding(4.dp).size(22.dp).clip(RoundedCornerShape(7.dp))
+            .then(if (gold) Modifier.background(C.goldBrush) else Modifier.background(Color(0xD9101014)))
+            .border(1.dp, if (gold) Color.Transparent else Color(0x33FFFFFF), RoundedCornerShape(7.dp)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            "$rank",
+            style = MaterialTheme.typography.labelLarge.copy(
+                color = if (gold) Color(0xFF1A1405) else C.txt, fontWeight = FontWeight.Black, fontSize = 12.sp,
+                textDirection = TextDirection.Ltr,
+            ),
+        )
     }
 }
 
-/** Ligne d'un sujet : rang, image, titre, rubrique, mesures réelles, courbe et progression. */
+/** Source principale du sujet + nombre d'autres sources + fraîcheur. */
+fun sourceLine(t: Topic): String {
+    val names = t.items.map { it.sourceName.removePrefix("YouTube · ") }.distinct()
+    val lead = t.items.firstOrNull { it.platform in ma.trend.almaghrib.engine.Sources.NEWS }?.sourceName
+        ?: names.firstOrNull().orEmpty()
+    val others = names.size - 1
+    val who = when {
+        others <= 0 -> lead
+        others == 1 -> "$lead ومصدر آخر"
+        others == 2 -> "$lead ومصدران آخران"
+        others <= 10 -> "$lead و$others مصادر أخرى"
+        else -> "$lead و$others مصدراً آخر"
+    }
+    return listOf(who, Fmt.ago(t.lastSeen)).filter { it.isNotBlank() }.joinToString(" · ")
+}
+
+/** Ligne d'un sujet : image avec rang, titre complet, source, rubrique, mesures réelles, courbe et progression. */
 @Composable
 fun TopicRow(rank: Int, t: Topic, onClick: () -> Unit, detailed: Boolean = false) {
     NCard(
-        padding = PaddingValues(start = 10.dp, end = 10.dp, top = 6.dp, bottom = 6.dp),
+        padding = PaddingValues(8.dp),
         border = if (rank <= 3) C.gold.copy(alpha = .22f) else C.line,
         onClick = onClick,
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            RankNumber(rank, big = rank <= 3)
-            Spacer(Modifier.width(8.dp))
-            Thumb(t.imageUrl, Modifier.size(width = 60.dp, height = 44.dp), t.categories.firstOrNull(), corner = 10.dp)
+        Row(verticalAlignment = Alignment.Top) {
+            Thumb(t.imageUrl, Modifier.size(width = 76.dp, height = 76.dp), t.categories.firstOrNull(), corner = 12.dp) {
+                RankBadge(rank, Modifier.align(Alignment.TopStart))
+            }
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text(t.title, maxLines = if (detailed) 2 else 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall)
-                Spacer(Modifier.height(4.dp))
+                Text(
+                    t.title, maxLines = if (detailed) 4 else 3, overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.5.sp, lineHeight = 21.sp),
+                )
+                Text(
+                    sourceLine(t), maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.labelSmall.copy(color = C.mut), modifier = Modifier.padding(top = 2.dp),
+                )
+                Spacer(Modifier.height(5.dp))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                     t.categories.firstOrNull()?.let { CatPill(it) }
                     if (t.controversial) ControversyPill()
@@ -85,14 +123,12 @@ fun TopicRow(rank: Int, t: Topic, onClick: () -> Unit, detailed: Boolean = false
                     val views = t.totalViews
                     val gt = t.googleTraffic
                     if (views != null) Metric(Icons.Filled.Visibility, Fmt.compact(views))
-                    else if (gt != null && detailed) Metric(Icons.Filled.Search, "+" + Fmt.compact(gt))
+                    else if (gt != null) Metric(Icons.Filled.Search, "+" + Fmt.compact(gt))
+                    Spacer(Modifier.weight(1f))
+                    val up = (t.progression ?: 0) >= 0
+                    Sparkline(t.hourly, Modifier.size(width = 40.dp, height = 16.dp), color = if (up) C.green else C.red, fill = false)
+                    Delta(t.progression, isNew = t.prev6h == 0 && t.last6h > 0, small = true)
                 }
-            }
-            Spacer(Modifier.width(6.dp))
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                val up = (t.progression ?: 0) >= 0
-                Sparkline(t.hourly, Modifier.size(width = 58.dp, height = 24.dp), color = if (up) C.green else C.red)
-                Delta(t.progression, isNew = t.prev6h == 0 && t.last6h > 0, small = true)
             }
         }
     }

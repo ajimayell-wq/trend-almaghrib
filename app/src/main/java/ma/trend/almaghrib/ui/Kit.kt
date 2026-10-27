@@ -181,7 +181,7 @@ fun AreaChart(values: IntArray, modifier: Modifier = Modifier) {
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             // Ordre visuel gauche → droite = ancien → récent (le graphique n'est pas inversé en RTL).
-            listOf("الآن", "-6 س", "-12 س", "-18 س", "-24 س").forEach {
+            listOf("الآن", "قبل 6 ساعات", "قبل 12 ساعة", "قبل 18 ساعة", "قبل 24 ساعة").forEach {
                 Text(it, style = MaterialTheme.typography.labelSmall.copy(color = C.mut2))
             }
         }

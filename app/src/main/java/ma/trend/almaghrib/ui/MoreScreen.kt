@@ -140,7 +140,7 @@ fun MoreScreen(st: AppState, repo: Repository) {
             }
         }
         Spacer(Modifier.height(12.dp))
-        Text("ترند المغرب · الإصدار 1.0", style = MaterialTheme.typography.labelSmall.copy(color = C.mut2), modifier = Modifier.align(Alignment.CenterHorizontally))
+        Text("ترند المغرب · الإصدار 1.1", style = MaterialTheme.typography.labelSmall.copy(color = C.mut2), modifier = Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(20.dp))
     }
 }

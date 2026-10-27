@@ -101,7 +101,7 @@ fun OpinionScreen(st: AppState, repo: Repository, topicId: Int?, onBack: (() -> 
                         topic.categories.firstOrNull()?.let { CatPill(it) }
                     }
                     Spacer(Modifier.height(6.dp))
-                    Text(topic.title, maxLines = 3, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp, lineHeight = 28.sp))
+                    Text(topic.title, maxLines = 4, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp, lineHeight = 28.sp))
                 }
             }
         }
@@ -296,7 +296,7 @@ private fun OpinionBody(r: Repository.OpinionResult, open: (String) -> Unit) {
     NCard {
         Row {
             Text("كيف تطور النقاش؟", style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
-            rep.peakHoursAgo?.let { Text(if (it == 0) "الذروة: الساعة الأخيرة" else "الذروة: قبل $it س", style = MaterialTheme.typography.labelSmall.copy(color = Color(0xFFFF8A8C))) }
+            rep.peakHoursAgo?.let { Text(if (it == 0) "الذروة: الساعة الأخيرة" else "الذروة: قبل ${Fmt.hours(it.toLong())}", style = MaterialTheme.typography.labelSmall.copy(color = Color(0xFFFF8A8C))) }
         }
         Spacer(Modifier.height(6.dp))
         AreaChart(rep.hourly)

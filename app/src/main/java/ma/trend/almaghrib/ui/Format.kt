@@ -24,14 +24,26 @@ object Fmt {
 
     fun compact(n: Int): String = compact(n.toLong())
 
+    /** Accord arabe du nombre : 1 ساعة، 2 ساعتان، 3–10 ساعات، 11+ ساعة. */
+    private fun plural(n: Long, one: String, two: String, few: String, many: String): String = when {
+        n == 1L -> one
+        n == 2L -> two
+        n in 3..10 -> "$n $few"
+        else -> "$n $many"
+    }
+
+    fun hours(n: Long): String = plural(n, "ساعة", "ساعتين", "ساعات", "ساعة")
+    fun minutes(n: Long): String = plural(n, "دقيقة", "دقيقتين", "دقائق", "دقيقة")
+    fun days(n: Long): String = plural(n, "يوم", "يومين", "أيام", "يوماً")
+
     fun ago(t: Instant?, now: Instant = Instant.now()): String {
         if (t == null) return ""
         val m = Duration.between(t, now).toMinutes().coerceAtLeast(0)
         return when {
             m < 1 -> "الآن"
-            m < 60 -> "قبل $m د"
-            m < 24 * 60 -> "قبل ${m / 60} س"
-            else -> "قبل ${m / (24 * 60)} يوم"
+            m < 60 -> "قبل ${minutes(m)}"
+            m < 24 * 60 -> "قبل ${hours(m / 60)}"
+            else -> "قبل ${days(m / (24 * 60))}"
         }
     }
 
@@ -50,7 +62,7 @@ object Fmt {
         "economie" -> Color(0x29FFAA28) to Color(0xFFFFC46B)
         "art" -> Color(0x29FF50A0) to Color(0xFFFF9CC8)
         "technologie" -> Color(0x2916C1D6) to Color(0xFF7FE3F0)
-        "international" -> Color(0x26FFFFFF) to Color(0xFFD9D4C8)
+        "international" -> Color(0x2938BDF8) to Color(0xFF8FD8FF)
         "controverse" -> Color(0x2EE5383B) to Color(0xFFFF8A8C)
         "video" -> Color(0x2916C1D6) to Color(0xFF7FE3F0)
         else -> Color(0x1FFFFFFF) to Color(0xFFCFC9BB)

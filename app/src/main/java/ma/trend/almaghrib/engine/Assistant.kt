@@ -16,6 +16,13 @@ object Assistant {
         val filters: List<String>,
     )
 
+    private fun hoursAr(n: Long) = when {
+        n == 1L -> "ساعة"
+        n == 2L -> "ساعتين"
+        n in 3..10 -> "$n ساعات"
+        else -> "$n ساعة"
+    }
+
     private fun has(q: String, vararg words: String) = words.any { q.contains(TextNorm.normalize(it)) }
 
     private val CAT_WORDS = mapOf(
@@ -38,7 +45,7 @@ object Assistant {
         val hours = Regex("(\\d+)\\s*(?:ساع|س\\b|h\\b|heure)").find(q)?.groupValues?.get(1)?.toLongOrNull()
             ?: 24L
         pool = pool.filter { t -> t.lastSeen?.let { Duration.between(it, now) <= Duration.ofHours(hours) } ?: false }
-        filters += "آخر $hours ساعة"
+        filters += "آخر ${hoursAr(hours)}"
 
         // Rubriques
         val cats = CAT_WORDS.filter { (_, w) -> has(q, *w) }.keys
@@ -81,7 +88,7 @@ object Assistant {
 
         val result = pool.take(8)
         val intro = when {
-            result.isEmpty() -> "لم أجد في المصادر المتاحة مواضيع تطابق سؤالك خلال آخر $hours ساعة."
+            result.isEmpty() -> "لم أجد في المصادر المتاحة مواضيع تطابق سؤالك خلال آخر ${hoursAr(hours)}."
             else -> buildString {
                 append("وجدت ${pool.size} ${if (pool.size == 1) "موضوعاً" else "مواضيع"} تطابق سؤالك")
                 append(". الأبرز: «${result.first().title}»")

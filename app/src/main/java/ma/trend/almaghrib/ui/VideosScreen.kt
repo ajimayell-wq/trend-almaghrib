@@ -191,7 +191,7 @@ private fun VideoRow(v: VideoItem, onClick: () -> Unit) {
             VideoThumb(v, Modifier.size(width = 116.dp, height = 66.dp), 26.dp)
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text(v.article.title, maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelLarge)
+                Text(v.article.title, maxLines = 3, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelLarge)
                 Spacer(Modifier.height(3.dp))
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                     v.categories.firstOrNull()?.let { CatPill(it) }
@@ -201,7 +201,7 @@ private fun VideoRow(v: VideoItem, onClick: () -> Unit) {
                 }
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(top = 3.dp)) {
                     v.article.metrics["views"]?.let { Metric(Icons.Filled.Visibility, Fmt.compact(it)) }
-                    v.viewsPerHour?.let { Text("${Fmt.compact(it.toLong())}/س", style = MaterialTheme.typography.labelMedium.copy(color = C.green)) }
+                    v.viewsPerHour?.let { Text("${Fmt.compact(it.toLong())} مشاهدة/ساعة", style = MaterialTheme.typography.labelMedium.copy(color = C.green)) }
                     Text(Fmt.ago(v.article.publishedAt), style = MaterialTheme.typography.labelSmall.copy(color = C.mut))
                 }
             }

@@ -182,12 +182,12 @@ private fun HomeHeader(st: AppState, onRefresh: () -> Unit, onAnalyst: () -> Uni
 
 @Composable
 private fun RisingCard(t: Topic, onClick: () -> Unit) {
-    NCard(Modifier.width(220.dp), border = C.green.copy(alpha = .25f), padding = PaddingValues(7.dp), onClick = onClick) {
+    NCard(Modifier.width(250.dp), border = C.green.copy(alpha = .25f), padding = PaddingValues(7.dp), onClick = onClick) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Thumb(t.imageUrl, Modifier.size(50.dp), t.categories.firstOrNull(), corner = 10.dp)
             Spacer(Modifier.width(8.dp))
             Column(Modifier.weight(1f)) {
-                Text(t.title, maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelLarge)
+                Text(t.title, maxLines = 3, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelLarge)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Filled.RocketLaunch, null, tint = C.green, modifier = Modifier.size(12.dp))
                     Spacer(Modifier.width(3.dp))
