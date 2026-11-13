@@ -42,6 +42,18 @@ import kotlinx.coroutines.launch
 import ma.trend.almaghrib.data.AppState
 import ma.trend.almaghrib.data.Repository
 
+/** Raison lisible d'une panne de source, à partir du message technique enregistré. */
+private fun stopReason(e: String): String = when {
+    e.isBlank() -> "سبب غير معروف"
+    e.contains("timeout", ignoreCase = true) -> "انتهت المهلة"
+    e.startsWith("HTTP 401") || e.startsWith("HTTP 403") -> "الموقع يرفض الوصول"
+    e.startsWith("HTTP 404") || e.startsWith("HTTP 410") -> "الرابط لم يعد موجوداً"
+    e.startsWith("HTTP 429") -> "طلبات كثيرة، أعد المحاولة لاحقاً"
+    e.startsWith("HTTP 5") -> "الموقع معطل حالياً"
+    e.contains("resolve host", ignoreCase = true) || e.contains("connect", ignoreCase = true) -> "تعذر الاتصال بالموقع"
+    else -> "الرد ليس خلاصة RSS صالحة"
+}
+
 @Composable
 fun MoreScreen(st: AppState, repo: Repository) {
     val scope = rememberCoroutineScope()
@@ -105,7 +117,7 @@ fun MoreScreen(st: AppState, repo: Repository) {
                     Spacer(Modifier.width(8.dp))
                     Text(s.name, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
                     Text(
-                        if (s.ok) "${s.count} منشور" else "متوقف",
+                        if (s.ok) "${s.count} منشور" else "متوقف · ${stopReason(s.error)}",
                         style = MaterialTheme.typography.labelSmall.copy(color = if (s.ok) C.mut else C.red),
                     )
                 }
@@ -140,7 +152,7 @@ fun MoreScreen(st: AppState, repo: Repository) {
             }
         }
         Spacer(Modifier.height(12.dp))
-        Text("ترند المغرب · الإصدار 1.1", style = MaterialTheme.typography.labelSmall.copy(color = C.mut2), modifier = Modifier.align(Alignment.CenterHorizontally))
+        Text("ترند المغرب · الإصدار 1.4", style = MaterialTheme.typography.labelSmall.copy(color = C.mut2), modifier = Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(20.dp))
     }
 }

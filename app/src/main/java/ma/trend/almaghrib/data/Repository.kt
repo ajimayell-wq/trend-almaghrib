@@ -42,6 +42,8 @@ data class VideoItem(
     val deltaViews: Long?,
     val deltaMinutes: Long?,
     val fromTrendingChart: Boolean,
+    /** Rang dans la liste officielle « tendances YouTube au Maroc » (clé YouTube), sinon null. */
+    val chartRank: Int? = null,
 )
 
 data class AppState(
@@ -55,7 +57,15 @@ data class AppState(
     val posts24h: Int = 0,
     val hasYoutubeKey: Boolean = false,
     val loaded: Boolean = false,
-)
+    /** Recherches en hausse sur Google au Maroc (24 h), les plus recherchées d'abord. */
+    val searches: List<Article> = emptyList(),
+    /** Ancien identifiant de sujet -> identifiant actuel (un sujet change d'identifiant quand ses articles évoluent). */
+    val aliases: Map<Int, Int> = emptyMap(),
+) {
+    /** Retrouve un sujet même si son identifiant a changé depuis l'actualisation précédente. */
+    fun find(id: Int): Topic? = topics.firstOrNull { it.id == id }
+        ?: aliases[id]?.let { a -> topics.firstOrNull { it.id == a } }
+}
 
 class Repository(context: Context) {
     private val store = Store(context)
@@ -66,7 +76,9 @@ class Repository(context: Context) {
     val state: StateFlow<AppState> = _state.asStateFlow()
     private var snapshot = Snapshot()
     private var trending: List<Article> = emptyList()
-    private val opinionCache = HashMap<Int, Pair<Instant, OpinionReport>>()
+    private val opinionCache = HashMap<Int, Pair<Instant, OpinionResult>>()
+    private var aliases: Map<Int, Int> = emptyMap()
+    private var lastTopicUrls: Map<Int, Set<String>> = emptyMap()
 
     var youtubeKey: String
         get() = store.youtubeKey
@@ -140,23 +152,53 @@ class Repository(context: Context) {
         }
         val states = snapshot.sources.map { Engine.SourceState(it.id, it.name, it.platform, it.ok, it.count) }
         val day = now.minus(Duration.ofHours(24))
+        val shown = topics.filter { t -> t.lastSeen?.isAfter(day) == true }
+        trackTopics(shown)
         _state.update {
             it.copy(
-                topics = topics.filter { t -> t.lastSeen?.isAfter(day) == true },
+                topics = shown,
+                aliases = aliases,
                 videos = videos,
                 coverage = engine.coverage(states),
                 sources = snapshot.sources,
                 lastRefresh = snapshot.lastRefresh?.let { s -> Instant.ofEpochSecond(s) },
                 posts24h = articles.count { a -> a.publishedAt?.isAfter(day) == true },
+                searches = articles.filter { a -> a.platform == "google_trends" && a.publishedAt?.isAfter(day) == true }
+                    .distinctBy { a -> a.title.lowercase() }
+                    .sortedWith(compareByDescending<Article> { a -> a.metrics["approx_traffic"] ?: 0L }.thenByDescending { a -> a.publishedAt }),
                 loaded = true,
             )
         }
+    }
+
+    /**
+     * Un sujet est identifié par son article le plus ancien : cet identifiant change quand ses articles évoluent.
+     * On relie chaque ancien sujet au nouveau sujet qui partage le plus d'articles avec lui,
+     * pour qu'une fiche ouverte reste sur le même sujet après une actualisation.
+     */
+    private fun trackTopics(shown: List<Topic>) {
+        val newIds = shown.map { it.id }.toSet()
+        val owner = HashMap<String, Int>()
+        shown.forEach { t -> t.items.forEach { a -> owner.putIfAbsent(a.url, t.id) } }
+        fun successor(urls: Set<String>): Int? =
+            urls.mapNotNull { owner[it] }.groupingBy { it }.eachCount().maxByOrNull { it.value }?.key
+        val next = HashMap<Int, Int>()
+        lastTopicUrls.forEach { (oldId, urls) -> if (oldId !in newIds) successor(urls)?.let { next[oldId] = it } }
+        aliases.forEach { (k, v) ->
+            if (k !in newIds) {
+                val target = if (v in newIds) v else next[v]
+                if (target != null) next[k] = target
+            }
+        }
+        aliases = next
+        lastTopicUrls = shown.associate { t -> t.id to t.items.map { it.url }.toSet() }
     }
 
     private fun buildVideos(articles: List<Article>, now: Instant): List<VideoItem> {
         val prev = snapshot.views
         val fromFeeds = articles.filter { it.platform == "youtube" && it.publishedAt?.isAfter(now.minus(Duration.ofHours(48))) == true }
         val all = (trending.map { it to true } + fromFeeds.map { it to false }).distinctBy { it.first.url }
+        val rank = trending.mapIndexed { i, a -> a.url to i + 1 }.toMap()
         return all.map { (a, chart) ->
             val views = a.metrics["views"]
             val hours = a.publishedAt?.let { Duration.between(it, now).toMinutes() / 60.0 }?.coerceAtLeast(0.5)
@@ -171,6 +213,7 @@ class Repository(context: Context) {
                 viewsPerHour = if (views != null && hours != null) views / hours else null,
                 deltaViews = delta, deltaMinutes = dMin?.takeIf { delta != null && it > 0 },
                 fromTrendingChart = chart,
+                chartRank = rank[a.url],
             )
         }.sortedByDescending { it.viewsPerHour ?: 0.0 }
     }
@@ -218,6 +261,10 @@ class Repository(context: Context) {
     /** Collecte les commentaires publics liés au sujet, puis les analyse (à la demande, jamais en arrière-plan). */
     suspend fun opinion(topic: Topic): OpinionResult = withContext(Dispatchers.Default) {
         val now = Instant.now()
+        // Même sujet ouvert il y a moins de 15 minutes : on réutilise l'analyse (évite les blocages Reddit et le quota YouTube).
+        opinionCache[topic.id]?.let { (at, cached) ->
+            if (Duration.between(at, now) < Duration.ofMinutes(15)) return@withContext cached
+        }
         val notes = mutableListOf<String>()
         val key = store.youtubeKey
         val sources = mutableListOf<String>()
@@ -238,8 +285,9 @@ class Repository(context: Context) {
             jobs.awaitAll().flatten()
         }.distinctBy { it.text }
         val report = Opinion.analyze(topic.items, comments, now)
-        opinionCache[topic.id] = now to report
-        OpinionResult(report, sources.distinct(), notes)
+        val result = OpinionResult(report, sources.distinct(), notes)
+        opinionCache[topic.id] = now to result
+        result
     }
 
     private suspend fun searchVideos(q: String, key: String, now: Instant): List<String> = runCatching {
@@ -262,7 +310,7 @@ class Repository(context: Context) {
         }.getOrDefault(false)
     }
 
-    fun topic(id: Int): Topic? = _state.value.topics.firstOrNull { it.id == id }
+    fun topic(id: Int): Topic? = _state.value.find(id)
 
     private fun enc(s: String) = URLEncoder.encode(s, "UTF-8")
 

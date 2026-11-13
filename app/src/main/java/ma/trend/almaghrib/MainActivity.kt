@@ -40,6 +40,7 @@ import ma.trend.almaghrib.ui.OpinionScreen
 import ma.trend.almaghrib.ui.Tab
 import ma.trend.almaghrib.ui.TrendTheme
 import ma.trend.almaghrib.ui.TrendsScreen
+import ma.trend.almaghrib.ui.TopScreen
 import ma.trend.almaghrib.ui.VideosScreen
 import java.time.Duration
 
@@ -51,6 +52,7 @@ class TrendApp : Application() {
 sealed interface Overlay {
     data class TopicDetail(val id: Int) : Overlay
     data object Analyst : Overlay
+    data class Top(val tab: Int) : Overlay
 }
 
 class MainActivity : ComponentActivity() {
@@ -100,10 +102,12 @@ private fun Root(repo: Repository) {
         when (val top = stack.lastOrNull()) {
             is Overlay.TopicDetail -> OpinionScreen(st, repo, top.id, onBack = { stack.removeAt(stack.lastIndex) }, onPick = { })
             Overlay.Analyst -> AnalystScreen(st, repo, onBack = { stack.removeAt(stack.lastIndex) }, onTopic = openTopic)
+            is Overlay.Top -> TopScreen(st, top.tab, onBack = { stack.removeAt(stack.lastIndex) },
+                onSettings = { stack.clear(); tab = Tab.MORE })
             null -> Column(Modifier.fillMaxSize()) {
                 Box(Modifier.weight(1f)) {
                     when (tab) {
-                        Tab.HOME -> HomeScreen(st, refresh, openTopic, { tab = Tab.TRENDS }, openAnalyst, { tab = Tab.MORE })
+                        Tab.HOME -> HomeScreen(st, refresh, openTopic, { tab = Tab.TRENDS }, openAnalyst, { tab = Tab.MORE }, { stack.add(Overlay.Top(it)) })
                         Tab.TRENDS -> TrendsScreen(st, openTopic, openAnalyst)
                         Tab.OPINION -> OpinionScreen(st, repo, opinionTopic, onBack = null, onPick = { opinionTopic = it })
                         Tab.VIDEOS -> VideosScreen(st) { tab = Tab.MORE }

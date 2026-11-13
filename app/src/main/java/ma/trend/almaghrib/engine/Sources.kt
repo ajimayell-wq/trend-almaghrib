@@ -15,11 +15,13 @@ data class Source(
     val lang: String,
     val institutional: Boolean = false,
     val verified: Boolean = false,
+    /** Rubriques déclarées par défaut pour cette source (ex. chaîne sportive). */
+    val tags: List<String> = emptyList(),
 )
 
 object Sources {
-    private fun yt(id: String, name: String, channel: String) =
-        Source(id, name, "youtube", "youtube_rss", "https://www.youtube.com/feeds/videos.xml?channel_id=$channel", "multi")
+    private fun yt(id: String, name: String, channel: String, tags: List<String> = emptyList()) =
+        Source(id, name, "youtube", "youtube_rss", "https://www.youtube.com/feeds/videos.xml?channel_id=$channel", "multi", tags = tags)
 
     val ALL: List<Source> = listOf(
         // Presse arabophone
@@ -27,12 +29,15 @@ object Sources {
         Source("alyaoum24", "اليوم 24", "media", "rss", "https://alyaoum24.com/feed", "ar"),
         Source("telquel_ar", "تيل كيل عربي", "media", "rss", "https://ar.telquel.ma/feed", "ar"),
         Source("goud", "كود", "media", "rss", "https://www.goud.ma/feed/", "ar"),
+        Source("barlamane", "برلمان.كوم", "media", "rss", "https://barlamane.com/feed/", "ar"),
+        Source("alayam24", "الأيام 24", "media", "rss", "https://www.alayam24.com/feed", "ar"),
         // Presse francophone
         Source("hespress_fr", "Hespress FR", "media", "rss", "https://fr.hespress.com/feed", "fr", verified = true),
         Source("medias24", "Médias24", "media", "rss", "https://medias24.com/feed/", "fr", verified = true),
         Source("yabiladi", "Yabiladi", "media", "rss", "https://www.yabiladi.com/rss/news.xml", "fr", verified = true),
         Source("telquel_fr", "TelQuel", "media", "rss", "https://telquel.ma/feed", "fr"),
-        Source("h24info", "H24info", "media", "rss", "https://www.h24info.ma/feed/", "fr"),
+        Source("leseco", "Les Inspirations ÉCO", "media", "rss", "https://leseco.ma/feed", "fr"),
+        Source("lavieeco", "La Vie éco", "media", "rss", "https://www.lavieeco.com/feed/", "fr"),
         Source("lesiteinfo_fr", "Le Site Info", "media", "rss", "https://www.lesiteinfo.com/feed/", "fr"),
         // Source officielle
         Source("map_fr", "MAP Express", "institution", "rss", "https://www.mapexpress.ma/feed/", "fr", institutional = true),
@@ -52,6 +57,10 @@ object Sources {
         yt("yt_aoula", "Al Aoula", "UCuSyI3P8JZOD1nPa_pqjutg"),
         yt("yt_kifache", "Kifache TV", "UCDnHrNrivT4AkwJdAgE8ZCw"),
         yt("yt_telemaroc", "Télé Maroc", "UC6eBD5wxTbOdZbZSTlHKtVg"),
+        // Chaînes sportives marocaines
+        yt("yt_elbotola", "Elbotola", "UCeOK-Kblp7K-M9xbAPSL7VQ", listOf("sport")),
+        yt("yt_mfmsport", "MFM Sport", "UCnDy06vggD-48O8ePrXMhAw", listOf("sport")),
+        yt("yt_kora_darija", "الكرة المغربية بالدارجة", "UCsL8ZAvWwE2r1CTcRA1JEkg", listOf("sport")),
         // Discussions publiques
         Source("reddit_morocco", "Reddit r/Morocco", "reddit", "reddit_rss", "https://www.reddit.com/r/Morocco/.rss", "multi"),
     )

@@ -79,7 +79,7 @@ fun VideosScreen(st: AppState, onSettings: () -> Unit) {
             Spacer(Modifier.width(8.dp))
             Text("الفيديوهات الرائجة", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.weight(1f))
         }
-        FilterChips(VFILTERS.map { it.label }, filter, { filter = it })
+        FilterChips(VFILTERS.mapIndexed { i, f -> if (i < 2) f.label else "${f.label} (${f.pick(st.videos).size})" }, filter, { filter = it })
         LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
             item {
                 val chart = st.videos.any { it.fromTrendingChart }
@@ -91,7 +91,7 @@ fun VideosScreen(st: AppState, onSettings: () -> Unit) {
                 )
             }
             if (featured == null) {
-                item { EmptyBlock(if (st.videos.isEmpty()) "لا توجد فيديوهات بعد. حدّث من الرئيسية." else "لا توجد فيديوهات في هذا التصنيف.") }
+                item { EmptyBlock(if (st.videos.isEmpty()) "لا توجد فيديوهات بعد. حدّث من الرئيسية." else "لا توجد فيديوهات «${VFILTERS[filter].label}» في القنوات المرصودة خلال آخر 48 ساعة. اسحب للتحديث من الرئيسية أو اختر تصنيفاً آخر.") }
             } else {
                 item { FeaturedVideo(featured) { uri.openUri(featured.article.url) } }
                 item {

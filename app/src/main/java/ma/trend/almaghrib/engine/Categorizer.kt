@@ -77,7 +77,11 @@ object Categorizer {
             "football", "botola", "lions de l'atlas", "frmf", "wydad", "raja", "far rabat", "rsb", "match",
             "selectionneur", "regragui", "can ", "coupe du monde", "mondial", "futsal", "ligue des champions",
             "transfert", "athletisme", "tennis", "boxe",
+            "buts", "resume du match", "highlights", "goal", "goals", "derby", "rsb", "codm", "hassania", "irt",
             "كره القدم", "البطوله", "المنتخب", "اسود الاطلس", "الوداد", "الرجاء", "مباراه", "الركراكي",
+            "هدف", "اهداف", "ملخص", "ديربي", "الجيش الملكي", "نهضه بركان", "المغرب الفاسي", "حسنيه اكادير",
+            "اتحاد طنجه", "الاسود", "البوطوله", "الفيفا", "الكاف", "دوري ابطال", "ريال مدريد", "برشلونه", "حكيمي",
+            "زياش", "دياز", "بونو", "النصيري",
             "كاس العالم", "كاس افريقيا", "لاعب", "مدرب",
         ),
         "regions" to listOf(

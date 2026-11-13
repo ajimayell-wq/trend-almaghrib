@@ -61,6 +61,7 @@ fun HomeScreen(
     onAllTrends: () -> Unit,
     onAnalyst: () -> Unit,
     onCoverage: () -> Unit,
+    onTop: (Int) -> Unit = {},
 ) {
     PullToRefreshBox(isRefreshing = st.refreshing, onRefresh = onRefresh, modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -69,7 +70,7 @@ fun HomeScreen(
             ),
             contentPadding = PaddingValues(bottom = 24.dp),
         ) {
-            item { HomeHeader(st, onRefresh, onAnalyst) }
+            item { HomeHeader(st, onRefresh, onAnalyst, onTop) }
             item {
                 Column(Modifier.padding(horizontal = 16.dp)) {
                     st.error?.let { Spacer(Modifier.height(8.dp)); Notice(it, C.red) }
@@ -110,7 +111,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeHeader(st: AppState, onRefresh: () -> Unit, onAnalyst: () -> Unit) {
+private fun HomeHeader(st: AppState, onRefresh: () -> Unit, onAnalyst: () -> Unit, onTop: (Int) -> Unit) {
     Column(Modifier.statusBarsPadding().padding(horizontal = 16.dp)) {
         Row(Modifier.fillMaxWidth().padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
             GlassIcon(Icons.Filled.Search, "بحث", onAnalyst)
@@ -177,6 +178,8 @@ private fun HomeHeader(st: AppState, onRefresh: () -> Unit, onAnalyst: () -> Uni
             )
             Icon(Icons.Filled.Search, null, tint = C.gold2, modifier = Modifier.size(19.dp))
         }
+        Spacer(Modifier.height(10.dp))
+        TopTiles(st, onTop)
     }
 }
 

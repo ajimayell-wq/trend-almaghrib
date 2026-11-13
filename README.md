@@ -17,16 +17,16 @@ Application Android native (Kotlin, Jetpack Compose, Material 3), entièrement e
 ## Sources
 | Source | Accès | Données |
 |---|---|---|
-| Presse marocaine (هسبريس, اليوم 24, كود, تيل كيل, Hespress FR, Médias24, Yabiladi, TelQuel, H24info, Le Site Info, MAP) | RSS | titres, extraits, dates |
+| Presse marocaine (هسبريس, اليوم 24, كود, تيل كيل, برلمان.كوم, الأيام 24, Hespress FR, Médias24, Yabiladi, TelQuel, Le Site Info, Les Inspirations ÉCO, La Vie éco, MAP) | RSS | titres, extraits, dates |
 | Google Actualités (AR, FR) | RSS | articles d'autres médias |
 | Google Trends Maroc | RSS | recherches en hausse, avec un nombre minimal de recherches |
-| Chaînes YouTube marocaines (Hespress, 2M, Medi1 TV, Chouf TV, Al Aoula, Kifache, Télé Maroc) | RSS public | vues et « j'aime » réels |
+| Chaînes YouTube marocaines (Hespress, 2M, Medi1 TV, Chouf TV, Al Aoula, Kifache, Télé Maroc, Elbotola, MFM Sport) | RSS public | vues et « j'aime » réels |
 | Reddit r/Morocco | RSS public | discussions et commentaires |
 | YouTube Data API (**facultatif**, clé gratuite) | API | tendances YouTube au Maroc, nombre de commentaires, analyse des commentaires |
 | Facebook, Instagram, TikTok | — | ❌ aucun accès légal pour une application : affiché comme « non couvert » |
 | X | API payante | ❌ non activé |
 
-Une source en panne n'empêche jamais les autres de fonctionner : elle est signalée dans « حالة المصادر ».
+Une source en panne n'empêche jamais les autres de fonctionner : elle est signalée dans « حالة المصادر », avec la raison de la panne.
 
 ## Principes
 - **Aucune donnée inventée.** Chaque chiffre vient d'une source. Une mesure absente s'affiche comme absente.
@@ -37,10 +37,12 @@ Une source en panne n'empêche jamais les autres de fonctionner : elle est signa
 - **Confidentialité** : aucun nom d'auteur de commentaire n'est conservé ni affiché.
 
 ## Compilation
-Chaque `push` lance GitHub Actions (`.github/workflows/apk.yml`), qui :
+Chaque envoi de code lance GitHub Actions (`.github/workflows/apk.yml`), qui :
 1. compile l'APK ;
-2. lance les tests du moteur ;
-3. publie l'APK dans la release `apk`. Lien de téléchargement direct : `https://github.com/ajimayell-wq/trend-almaghrib/releases/latest/download/trend-almaghrib.apk`.
+2. lance les tests du moteur (obligatoires : si un test échoue, l'APK n'est pas publié) ;
+3. publie l'APK. Lien de téléchargement direct : `https://github.com/ajimayell-wq/trend-almaghrib/releases/download/apk/trend-almaghrib.apk`.
+
+Pour vérifier les sources : onglet **Actions** → **Tester les sources** → **Run workflow**. Le résultat de chaque source s'affiche dans le résumé de l'exécution.
 
 La clé de signature est fixe (`app/trend-debug.keystore`) : les nouvelles versions s'installent par-dessus l'ancienne. Elle est réservée à un usage personnel et ne convient pas au Play Store.
 
@@ -48,3 +50,4 @@ La clé de signature est fixe (`app/trend-debug.keystore`) : les nouvelles versi
 - `engine/` : moteur pur Kotlin, testé (`app/src/test`) : analyse des flux, normalisation FR / AR / darija / Arabizi, regroupement TF-IDF, score, rubriques, polémique, sentiment, opinions, assistant.
 - `data/` : réseau (OkHttp), cache JSON, dépôt et API YouTube facultative.
 - `ui/` : écrans Compose.
+- `tools/check_sources.py` : test de chaque source depuis un serveur.

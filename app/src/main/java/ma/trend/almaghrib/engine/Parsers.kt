@@ -200,6 +200,7 @@ object Parsers {
                 lang = TextNorm.detectLang(title),
                 publishedAt = parseDate(e.child("published", NS_ATOM).text()),
                 imageUrl = "https://i.ytimg.com/vi/$id/hqdefault.jpg",
+                tags = source.tags,
                 metrics = buildMap { views?.let { put("views", it) }; likes?.let { put("likes", it) } },
                 videoId = id,
             )

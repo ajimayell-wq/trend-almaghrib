@@ -60,7 +60,16 @@ import ma.trend.almaghrib.engine.Topic
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun OpinionScreen(st: AppState, repo: Repository, topicId: Int?, onBack: (() -> Unit)?, onPick: (Int) -> Unit) {
-    val topic: Topic? = topicId?.let { id -> st.topics.firstOrNull { it.id == id } }
+    val requested: Topic? = topicId?.let { st.find(it) }
+    if (topicId != null && onBack != null && requested == null && st.loaded) {
+        // Fiche ouverte depuis une liste : on n'affiche jamais un autre sujet à la place.
+        Column(Modifier.fillMaxSize().statusBarsPadding()) {
+            TopTitle("ماذا يقول المغاربة؟", onBack)
+            EmptyBlock("خرج هذا الموضوع من ترندات آخر 24 ساعة بعد التحديث. ارجع واختر موضوعاً آخر.")
+        }
+        return
+    }
+    val topic: Topic? = requested
         ?: st.topics.take(20).firstOrNull { it.controversial } ?: st.topics.firstOrNull()
     if (topic == null) {
         Column(Modifier.fillMaxSize().statusBarsPadding()) {
